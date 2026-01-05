@@ -697,10 +697,34 @@
 
     <!-- Entradas Screen -->
     <div id="screen-entradas" class="screen active">
-        <div class="section-title">📱 Escanear Entrada</div>
+        <div class="section-title">🎟️ Validar Entrada</div>
 
+        <!-- Manual Code Input -->
+        <div class="manual-input-container"
+            style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Ingresar código manualmente:
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="manualCode" placeholder="ABC123" maxlength="6"
+                    style="flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; font-family: monospace; text-align: center;">
+                <button onclick="validateManualCode()"
+                    style="background: var(--pink); border: none; border-radius: 8px; padding: 12px 20px; color: white; font-weight: 600; cursor: pointer;">Validar</button>
+            </div>
+        </div>
+
+        <!-- Scanner Toggle -->
         <div class="scanner-container">
-            <div id="qr-reader"></div>
+            <div id="scanner-toggle" style="padding: 24px; text-align: center;">
+                <button onclick="toggleScanner()" id="scannerBtn"
+                    style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 28px; color: var(--text); font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2" />
+                    </svg>
+                    Abrir cámara
+                </button>
+            </div>
+            <div id="qr-reader" style="display: none;"></div>
         </div>
 
         <div id="scanResult" style="display: none;"></div>
@@ -1012,26 +1036,93 @@
         }
 
         // Scanner
+        let scannerActive = false;
+
         function initScanner() {
             html5QrCode = new Html5Qrcode("qr-reader");
-            startScanning();
+            // Don't auto-start camera
+        }
+
+        function toggleScanner() {
+            if (scannerActive) {
+                stopScanning();
+            } else {
+                startScanning();
+            }
         }
 
         function startScanning() {
+            document.getElementById('qr-reader').style.display = 'block';
+            document.getElementById('scanner-toggle').style.display = 'none';
+
             html5QrCode.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 220, height: 220 } },
                 onScanSuccess,
                 () => { }
-            ).catch(err => {
+            ).then(() => {
+                scannerActive = true;
+            }).catch(err => {
                 document.getElementById('qr-reader').innerHTML = `
                     <div style="padding: 30px; text-align: center; color: var(--text-muted);">
                         <p style="margin-bottom:12px;">No se pudo acceder a la cámara</p>
                         <button onclick="startScanning()" style="padding: 10px 20px; background: var(--pink); border: none; border-radius: 8px; color: white; font-weight: 600;">Reintentar</button>
+                        <button onclick="stopScanning()" style="padding: 10px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 500; margin-left: 8px;">Cancelar</button>
                     </div>
                 `;
             });
         }
+
+        function stopScanning() {
+            if (html5QrCode && scannerActive) {
+                html5QrCode.stop().catch(() => { });
+            }
+            scannerActive = false;
+            document.getElementById('qr-reader').style.display = 'none';
+            document.getElementById('qr-reader').innerHTML = '';
+            document.getElementById('scanner-toggle').style.display = 'block';
+        }
+
+        // Manual code validation
+        function validateManualCode() {
+            const code = document.getElementById('manualCode').value.trim().toUpperCase();
+            if (code.length < 4) {
+                alert('Ingresá al menos 4 caracteres del código');
+                return;
+            }
+            // Search by partial code
+            validateTicketByCode(code);
+        }
+
+        async function validateTicketByCode(code) {
+            try {
+                const response = await fetch(`${API_URL}/tickets-use`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticketCode: code, searchMode: true })
+                });
+                const data = await response.json();
+
+                if (data.status === 'VALID' || data.success) {
+                    showScanResult('valid', '¡Entrada válida!', data.message || 'Código encontrado');
+                    document.getElementById('manualCode').value = '';
+                    loadCurrentFunction();
+                } else if (data.status === 'ALREADY_USED') {
+                    showScanResult('used', 'Ya fue usada', data.message);
+                } else {
+                    showScanResult('error', 'No encontrado', data.message || 'Código no válido');
+                }
+            } catch {
+                showScanResult('error', 'Error', 'No se pudo validar');
+            }
+        }
+
+        // Handle Enter key on manual input
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('manualCode')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') validateManualCode();
+            });
+        });
 
         function onScanSuccess(decodedText) {
             if (decodedText === lastScannedCode) return;
