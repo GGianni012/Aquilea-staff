@@ -1044,6 +1044,12 @@
 
     <script>
         const API_URL = 'https://iazjntvrxfyxlinkuiwx.supabase.co/functions/v1';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhempudHZyeGZ5eGxpbmt1aXd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MTk1NDMsImV4cCI6MjA1MDQ5NTU0M30.aK2_7FZP44Lq5fvYmU8MBQ0t3kBckE0un_DI8-rGnNM';
+        const API_HEADERS = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'apikey': SUPABASE_ANON_KEY
+        };
         const DIAS = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
 
         let currentMesa = null;
@@ -1134,7 +1140,7 @@
         async function validateTicketByCode(code) {
             try {
                 const response = await fetch(`${API_URL}/tickets-use`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: code, searchMode: true })
                 });
                 const data = await response.json();
@@ -1179,7 +1185,7 @@
                 const ticketCode = ticketInfo.ticketCode;
 
                 const response = await fetch(`${API_URL}/tickets-use`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: ticketCode, searchMode: true })
                 });
                 const data = await response.json();
@@ -1215,7 +1221,7 @@
         async function markAsUsed(rawCode) {
             try {
                 const response = await fetch(`${API_URL}/tickets-use`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: rawCode })
                 });
                 const data = await response.json();
