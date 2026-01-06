@@ -1175,13 +1175,16 @@
 
         async function validateTicket(rawCode, ticketInfo) {
             try {
-                const response = await fetch(`${API_URL}/tickets-validate`, {
+                // Extract ticket code from QR payload for validation
+                const ticketCode = ticketInfo.ticketCode;
+
+                const response = await fetch(`${API_URL}/tickets-use`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticketCode: rawCode })
+                    body: JSON.stringify({ ticketCode: ticketCode, searchMode: true })
                 });
                 const data = await response.json();
-                if (data.status === 'VALID') {
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${ticketInfo.userName}<br>${ticketInfo.movieTitle}`, ticketInfo, rawCode);
+                if (data.status === 'VALID' || data.success) {
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${ticketInfo.userName}<br>${ticketInfo.movieTitle}`, ticketInfo, ticketCode);
                 } else if (data.status === 'ALREADY_USED') {
                     showScanResult('used', 'YA FUE USADA', data.message, ticketInfo);
                 } else {
