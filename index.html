@@ -1213,8 +1213,11 @@
                 });
                 const data = await response.json();
                 if (data.status === 'VALID' || data.success) {
-                    const placeholderInfo = { userName: data.message.split(': ')[1] || 'Usuario' };
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', data.message || 'Código encontrado', placeholderInfo, code);
+                    const placeholderInfo = {
+                        userName: data.message.split(': ')[1] || 'Usuario',
+                        movieTitle: data.movieInfo || 'Película'
+                    };
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${placeholderInfo.userName}<br>${placeholderInfo.movieTitle}`, placeholderInfo, code);
                     document.getElementById('manualCode').value = '';
                     loadCurrentFunction();
                 } else if (data.status === 'ALREADY_USED') {
@@ -1259,7 +1262,11 @@
                 });
                 const data = await response.json();
                 if (data.status === 'VALID' || data.success) {
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${ticketInfo.userName}<br>${ticketInfo.movieTitle}`, ticketInfo, ticketCode);
+                    const info = {
+                        ...ticketInfo,
+                        movieTitle: data.movieInfo || ticketInfo.movieTitle
+                    };
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${info.userName}<br>${info.movieTitle}`, info, ticketCode);
                 } else if (data.status === 'ALREADY_USED') {
                     showScanResult('used', 'YA FUE USADA', data.message, ticketInfo);
                 } else {
