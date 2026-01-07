@@ -1207,14 +1207,14 @@
 
         async function validateTicketByCode(code) {
             try {
-                const response = await fetch(`${API_URL}/tickets-use`, {
+                const response = await fetch(`${API_URL}/tickets-use?t=${Date.now()}`, {
                     method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: code, searchMode: true })
                 });
                 const data = await response.json();
                 if (data.status === 'VALID' || data.success) {
                     const userName = data.message.split(': ')[1] || 'Usuario';
-                    const movieDisplay = data.movieInfo || 'Película / Horario no encontrado';
+                    const movieDisplay = data.movieInfo || 'Título no disponible';
                     const info = { userName, movieTitle: movieDisplay };
                     showScanResult('valid', '¡ENTRADA VÁLIDA!', `${userName}<br><span style="font-size:0.9em; color:var(--red); font-weight: bold;">${movieDisplay}</span>`, info, code);
                     document.getElementById('manualCode').value = '';
@@ -1255,7 +1255,7 @@
                 // Extract ticket code from QR payload for validation
                 const ticketCode = ticketInfo.ticketCode;
 
-                const response = await fetch(`${API_URL}/tickets-use`, {
+                const response = await fetch(`${API_URL}/tickets-use?t=${Date.now()}`, {
                     method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: ticketCode, searchMode: true })
                 });
@@ -1295,7 +1295,7 @@
 
         async function markAsUsed(rawCode) {
             try {
-                const response = await fetch(`${API_URL}/tickets-use`, {
+                const response = await fetch(`${API_URL}/tickets-use?t=${Date.now()}`, {
                     method: 'POST', headers: API_HEADERS,
                     body: JSON.stringify({ ticketCode: rawCode })
                 });
