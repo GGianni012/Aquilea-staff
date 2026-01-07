@@ -1225,12 +1225,31 @@
                     body: JSON.stringify({ ticketCode: rawCode })
                 });
                 const data = await response.json();
-                if (data.status === 'VALID') { showScanResult('valid', '¡REGISTRADA!', 'Entrada marcada como usada'); loadCurrentFunction(); }
-                else { showScanResult('error', 'ERROR', data.message); }
+                if (data.status === 'VALID' || data.success) {
+                    // Show success briefly with vibration
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                    showScanResult('valid', '¡REGISTRADA!', 'Entrada marcada como usada');
+                    loadCurrentFunction();
+                    // Auto-reset after 2 seconds for continuous scanning
+                    setTimeout(() => {
+                        resetScanner();
+                    }, 2000);
+                }
+                else if (data.status === 'ALREADY_USED') {
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    showScanResult('used', 'YA USADA', data.message);
+                }
+                else {
+                    showScanResult('error', 'ERROR', data.message);
+                }
             } catch { showScanResult('error', 'ERROR', 'No se pudo registrar'); }
         }
 
-        function resetScanner() { document.getElementById('scanResult').style.display = 'none'; lastScannedCode = null; }
+        function resetScanner() {
+            document.getElementById('scanResult').style.display = 'none';
+            lastScannedCode = null;
+            document.getElementById('manualCode').value = '';
+        }
 
         async function loadCurrentFunction() {
             const panel = document.getElementById('functionPanel');
