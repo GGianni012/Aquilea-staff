@@ -1213,11 +1213,10 @@
                 });
                 const data = await response.json();
                 if (data.status === 'VALID' || data.success) {
-                    const placeholderInfo = {
-                        userName: data.message.split(': ')[1] || 'Usuario',
-                        movieTitle: data.movieInfo || 'Película'
-                    };
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${placeholderInfo.userName}<br>${placeholderInfo.movieTitle}`, placeholderInfo, code);
+                    const userName = data.message.split(': ')[1] || 'Usuario';
+                    const movieDisplay = data.movieInfo || 'Película / Horario no encontrado';
+                    const info = { userName, movieTitle: movieDisplay };
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${userName}<br><span style="font-size:0.9em; color:var(--red); font-weight: bold;">${movieDisplay}</span>`, info, code);
                     document.getElementById('manualCode').value = '';
                     loadCurrentFunction();
                 } else if (data.status === 'ALREADY_USED') {
@@ -1266,7 +1265,7 @@
                         ...ticketInfo,
                         movieTitle: data.movieInfo || ticketInfo.movieTitle
                     };
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${info.userName}<br>${info.movieTitle}`, info, ticketCode);
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', `${info.userName}<br><span style="font-size:0.9em; color:var(--red); font-weight: bold;">${info.movieTitle}</span>`, info, ticketCode);
                 } else if (data.status === 'ALREADY_USED') {
                     showScanResult('used', 'YA FUE USADA', data.message, ticketInfo);
                 } else {
