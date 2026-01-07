@@ -1296,7 +1296,9 @@
                 if (data.status === 'VALID' || data.success) {
                     // Show success briefly with vibration
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                    showScanResult('valid', '¡REGISTRADA!', 'Entrada marcada como usada');
+
+                    const detailInfo = data.detail ? `<br><small style="color:#666; font-size: 0.7em;">(${data.detail.sheet}, fila ${data.detail.row})</small>` : '';
+                    showScanResult('valid', '¡REGISTRADA!', `Entrada marcada como usada${detailInfo}`);
                     loadCurrentFunction();
                     // Auto-reset after 2 seconds for continuous scanning
                     setTimeout(() => {
