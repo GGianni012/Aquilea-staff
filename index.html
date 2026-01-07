@@ -67,9 +67,24 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            /* Angled bottom edge */
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-            padding-bottom: 20px;
+            padding-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-bottom: 30px;
+                clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
 
         .header-left {
@@ -139,11 +154,22 @@
             background: var(--black);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0 max(24px, env(safe-area-inset-bottom));
+            padding: 12px 10px max(24px, env(safe-area-inset-bottom));
             z-index: 100;
-            /* Angled top edge */
             clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
             padding-top: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .nav-item {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            .nav-item svg {
+                width: 20px;
+                height: 20px;
+            }
         }
 
         .nav-item {
@@ -244,6 +270,21 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
             margin-bottom: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .mesa-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .screen {
+                padding: 16px 12px;
+            }
         }
 
         .mesa-btn {
@@ -492,7 +533,23 @@
 
         .manual-input-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .manual-input-row {
+                flex-direction: column;
+            }
+
+            .manual-input button {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .manual-input input {
+                width: 100%;
+                font-size: 1.8rem;
+            }
         }
 
         .manual-input input {
@@ -505,6 +562,7 @@
             letter-spacing: 4px;
             text-align: center;
             text-transform: uppercase;
+            min-height: 54px;
         }
 
         .manual-input input::placeholder {
@@ -521,6 +579,7 @@
             font-size: 1rem;
             letter-spacing: 1px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         /* Scanner */
@@ -544,7 +603,16 @@
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+            width: 80%;
+            min-height: 54px;
+        }
+
+        @media (max-width: 480px) {
+            .scanner-toggle button {
+                width: 100%;
+            }
         }
 
         .scanner-container {
