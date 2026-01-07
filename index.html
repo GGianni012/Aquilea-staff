@@ -1213,7 +1213,8 @@
                 });
                 const data = await response.json();
                 if (data.status === 'VALID' || data.success) {
-                    showScanResult('valid', '¡ENTRADA VÁLIDA!', data.message || 'Código encontrado');
+                    const placeholderInfo = { userName: data.message.split(': ')[1] || 'Usuario' };
+                    showScanResult('valid', '¡ENTRADA VÁLIDA!', data.message || 'Código encontrado', placeholderInfo, code);
                     document.getElementById('manualCode').value = '';
                     loadCurrentFunction();
                 } else if (data.status === 'ALREADY_USED') {
@@ -1276,12 +1277,12 @@
                     <div class="scan-result-icon">${icons[status]}</div>
                     <div class="scan-result-title">${title}</div>
                     <div class="scan-result-info">${message}</div>
-                    ${status === 'valid' && ticketInfo ? `
+                    ${status === 'valid' && (ticketInfo || rawCode) ? `
                         <div class="scan-result-actions">
-                            <button class="btn-validate" onclick="markAsUsed('${rawCode}')">VALIDAR</button>
-                            <button class="btn-scan-again" onclick="resetScanner()">OTRA</button>
+                            <button class="btn-validate" onclick="markAsUsed('${rawCode}')" style="background:var(--red); color:white; border:2px solid var(--black); padding:16px; font-family:'Bebas Neue',sans-serif; width:100%; font-size:1.2rem; cursor:pointer; margin-bottom:10px;">CONFIRMAR INGRESO</button>
+                            <button class="btn-scan-again" onclick="resetScanner()" style="background:white; color:var(--black); border:2px solid var(--black); padding:12px; font-family:'Bebas Neue',sans-serif; width:100%; font-size:1rem; cursor:pointer;">CANCELAR</button>
                         </div>
-                    ` : `<div class="scan-result-actions"><button class="btn-scan-again" onclick="resetScanner()">ESCANEAR OTRA</button></div>`}
+                    ` : `<div class="scan-result-actions"><button class="btn-scan-again" onclick="resetScanner()">VOLVER</button></div>`}
                 </div>
             `;
         }
