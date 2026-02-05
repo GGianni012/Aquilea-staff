@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -1068,6 +1069,312 @@
             font-family: 'Bebas Neue', sans-serif;
             cursor: pointer;
         }
+
+        /* ==================== DRACMAS PANEL ==================== */
+        .dracma-search-panel {
+            background: var(--cream-dark);
+            border: 2px solid var(--black);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .dracma-search-panel label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .search-row input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--black);
+            font-size: 1rem;
+        }
+
+        .citizen-results {
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .citizen-result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border: 2px solid var(--black);
+            margin-top: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .citizen-result-item:hover {
+            background: var(--cream);
+            transform: translateX(4px);
+        }
+
+        .citizen-result-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--red);
+        }
+
+        .citizen-result-item .name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .citizen-result-item .email {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .citizen-result-item .balance-badge {
+            margin-left: auto;
+            background: var(--black);
+            color: var(--cream);
+            padding: 4px 10px;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .selected-citizen-card {
+            background: var(--black);
+            color: white;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .citizen-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .selected-citizen-card .citizen-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--red);
+        }
+
+        .citizen-details {
+            flex: 1;
+        }
+
+        .citizen-details .citizen-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+        }
+
+        .citizen-details .citizen-level {
+            font-size: 0.85rem;
+            color: var(--red);
+        }
+
+        .change-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 12px;
+            font-family: 'Bebas Neue', sans-serif;
+            cursor: pointer;
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .balance-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .balance-amount {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--cream);
+        }
+
+        .consumption-form {
+            background: var(--cream-dark);
+            border: 2px solid var(--black);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .consumption-form label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .consumption-form label:first-child {
+            margin-top: 0;
+        }
+
+        .consumption-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--black);
+            font-size: 1rem;
+        }
+
+        .price-input-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-prefix {
+            padding: 12px;
+            background: var(--black);
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            border: 2px solid var(--black);
+            border-right: none;
+        }
+
+        .price-input-row input {
+            border-left: none;
+        }
+
+        .calculation-preview {
+            background: white;
+            border: 2px solid var(--black);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .calc-row.cashback {
+            color: var(--success);
+        }
+
+        .calc-row.total {
+            border-top: 2px solid var(--black);
+            padding-top: 12px;
+            margin-top: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .confirm-consumption-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 16px;
+            background: var(--red);
+            color: white;
+            border: 2px solid var(--black);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .confirm-consumption-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .confirm-consumption-btn:not(:disabled):hover {
+            background: var(--black);
+        }
+
+        /* ==================== MEMBERSHIP APPROVAL ==================== */
+        .membership-btn {
+            flex: 1;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid #555;
+            color: #888;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .membership-btn:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .membership-btn.selected {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #000;
+        }
+
+        .approve-btn {
+            width: 100%;
+            padding: 16px;
+            background: #4ade80;
+            color: #000;
+            border: none;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .approve-btn:disabled {
+            background: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .approve-btn:not(:disabled):hover {
+            background: #22c55e;
+        }
+
+        .consumption-success {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            font-size: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .success-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .consumption-success button {
+            padding: 14px 32px;
+            background: var(--black);
+            color: white;
+            border: none;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -1360,6 +1667,75 @@
         </div>
     </div>
 
+    <!-- DRACMAS Screen -->
+    <div id="screen-dracmas" class="screen">
+        <div class="section-title">CARGAR CONSUMO DRACMAS</div>
+
+        <!-- Citizen Search -->
+        <div class="dracma-search-panel">
+            <label>BUSCAR CIUDADANO</label>
+            <div class="search-row">
+                <input type="text" id="citizenSearch" placeholder="Nombre o email..."
+                    oninput="searchCitizens(this.value)">
+            </div>
+            <div class="citizen-results" id="citizenResults"></div>
+        </div>
+
+        <!-- Selected Citizen Card (hidden by default) -->
+        <div class="selected-citizen-card" id="selectedCitizenCard" style="display: none;">
+            <div class="citizen-row">
+                <img src="" alt="" class="citizen-avatar" id="staffCitizenAvatar">
+                <div class="citizen-details">
+                    <div class="citizen-name" id="staffCitizenName">-</div>
+                    <div class="citizen-level" id="staffCitizenLevel">-</div>
+                </div>
+                <button class="change-btn" onclick="clearSelectedCitizen()">CAMBIAR</button>
+            </div>
+            <div class="balance-row">
+                <span class="balance-label">SALDO DISPONIBLE</span>
+                <span class="balance-amount" id="staffCitizenBalance">0.00 Ɖ</span>
+            </div>
+        </div>
+
+        <!-- Consumption Form (hidden until citizen selected) -->
+        <div class="consumption-form" id="consumptionForm" style="display: none;">
+            <label>ITEM CONSUMIDO</label>
+            <input type="text" id="consumptionItem" placeholder="Ej: Gin Tonic, Schiaccata...">
+
+            <label>PRECIO EN PESOS</label>
+            <div class="price-input-row">
+                <span class="currency-prefix">$</span>
+                <input type="number" id="consumptionPrice" placeholder="8500" oninput="calculateDracmas()">
+            </div>
+
+            <div class="calculation-preview" id="calculationPreview">
+                <div class="calc-row">
+                    <span>Descuento:</span>
+                    <span id="dracmaDeduction">-0.00 Ɖ</span>
+                </div>
+                <div class="calc-row cashback">
+                    <span>Cashback 10%:</span>
+                    <span id="dracmaCashback">+0.00 Ɖ</span>
+                </div>
+                <div class="calc-row total">
+                    <span>Saldo después:</span>
+                    <span id="balanceAfter">0.00 Ɖ</span>
+                </div>
+            </div>
+
+            <button class="confirm-consumption-btn" id="confirmBtn" onclick="confirmConsumption()" disabled>
+                CONFIRMAR CONSUMO
+            </button>
+        </div>
+
+        <!-- Success Feedback (hidden) -->
+        <div class="consumption-success" id="consumptionSuccess" style="display: none;">
+            <div class="success-icon">✓</div>
+            <div class="success-text">CONSUMO REGISTRADO</div>
+            <button onclick="resetDracmaScreen()">NUEVO CONSUMO</button>
+        </div>
+    </div>
+
     <!-- Order Bar -->
     <div class="order-bar" id="orderBar">
         <div class="order-bar-info">
@@ -1367,6 +1743,72 @@
             <span id="barItems">0 items</span>
         </div>
         <button onclick="sendOrder()">ENVIAR →</button>
+    </div>
+
+    <!-- CIUDADANOS Screen (Membership Approval) -->
+    <div id="screen-ciudadanos" class="screen">
+        <div class="section-title">GESTIÓN DE CIUDADANOS</div>
+
+        <!-- Citizen Search -->
+        <div class="dracma-search-panel">
+            <label>BUSCAR CIUDADANO</label>
+            <div class="search-row">
+                <input type="text" id="membershipSearch" placeholder="Nombre o email..."
+                    oninput="searchCitizensForMembership(this.value)">
+            </div>
+            <div class="citizen-results" id="membershipResults"></div>
+        </div>
+
+        <!-- Selected Citizen for Membership -->
+        <div id="membershipCitizenCard" style="display: none;">
+            <div class="selected-citizen-card">
+                <div class="citizen-row">
+                    <img id="membershipAvatar" src="" alt="">
+                    <div>
+                        <div class="name" id="membershipName"></div>
+                        <div class="email" id="membershipEmail"></div>
+                    </div>
+                </div>
+                <div class="citizen-stats">
+                    <div>
+                        <span class="label">Tipo actual:</span>
+                        <span class="value" id="membershipCurrentType"></span>
+                    </div>
+                    <div>
+                        <span class="label">Saldo DRACMAS:</span>
+                        <span class="value" id="membershipBalance"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membership Actions -->
+            <div class="membership-actions" style="margin-top: 16px;">
+                <label style="color: #d4af37; font-size: 14px; display: block; margin-bottom: 8px;">APROBAR
+                    MEMBRESÍA</label>
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <button class="membership-btn" id="btnStandard" onclick="selectMembershipPlan('standard')">
+                        STANDARD<br><small>$6.000 / 25 ₯</small>
+                    </button>
+                    <button class="membership-btn" id="btnPremium" onclick="selectMembershipPlan('premium')">
+                        PREMIUM<br><small>$10.000 / 50 ₯</small>
+                    </button>
+                </div>
+                <button id="approveMembershipBtn" class="approve-btn" onclick="approveMembership()" disabled>
+                    CONFIRMAR APROBACIÓN
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="membershipSuccess" style="display: none; text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+            <div style="color: #4ade80; font-size: 18px; margin-bottom: 8px;">MEMBRESÍA APROBADA</div>
+            <div id="membershipSuccessDetails" style="color: #888;"></div>
+            <button onclick="resetMembershipScreen()"
+                style="margin-top: 24px; padding: 12px 24px; background: #333; border: 1px solid #555; color: white; cursor: pointer;">
+                CARGAR OTRA
+            </button>
+        </div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -1397,6 +1839,20 @@
                 <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
             MEDIOS
+        </div>
+        <div class="nav-item" onclick="switchScreen('dracmas')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v12M9 9h6M9 15h6" />
+            </svg>
+            DRACMAS
+        </div>
+        <div class="nav-item" onclick="switchScreen('ciudadanos')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            SOCIOS
         </div>
     </nav>
 
@@ -1736,6 +2192,414 @@
         async function vlcFullscreen() { await vlcRequest({ command: 'fullscreen' }); }
         async function vlcPlayNow() { const input = document.getElementById('vlcMediaInput').value.trim(); if (!input) return; await vlcRequest({ command: 'in_play', input: input }); document.getElementById('vlcMediaInput').value = ''; setTimeout(vlcPoll, 500); }
         setTimeout(vlcInit, 500);
+
+        // ==================== DRACMAS PANEL ====================
+        const SUPABASE_URL = 'https://iazjntvrxfyxlinkuiwx.supabase.co';
+        let supabaseClient = null;
+        let selectedCitizen = null;
+        let searchTimeout = null;
+
+        // Initialize Supabase for DRACMAS
+        async function initDracmaSupabase() {
+            if (typeof supabase !== 'undefined') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        }
+
+        // Search citizens by name or email
+        async function searchCitizens(query) {
+            clearTimeout(searchTimeout);
+            const resultsDiv = document.getElementById('citizenResults');
+
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                if (!supabaseClient) {
+                    resultsDiv.innerHTML = '<div style="padding: 12px; color: #888;">Conectando...</div>';
+                    await initDracmaSupabase();
+                }
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('citizens')
+                        .select('*')
+                        .or(`email.ilike.%${query}%,name.ilike.%${query}%`)
+                        .neq('membership_type', 'inactive')
+                        .limit(5);
+
+                    if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        resultsDiv.innerHTML = '<div style="padding: 12px; color: #888;">No se encontraron ciudadanos</div>';
+                        return;
+                    }
+
+                    resultsDiv.innerHTML = data.map(citizen => `
+                        <div class="citizen-result-item" onclick='selectCitizen(${JSON.stringify(citizen).replace(/'/g, "\\'")})'>
+                            <img src="${citizen.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(citizen.name || citizen.email)}" alt="">
+                            <div>
+                                <div class="name">${citizen.name || citizen.email.split('@')[0]}</div>
+                                <div class="email">${citizen.email}</div>
+                            </div>
+                            <span class="balance-badge">${parseFloat(citizen.dracma_balance || 0).toFixed(2)} Ɖ</span>
+                        </div>
+                    `).join('');
+                } catch (err) {
+                    console.error('Error searching citizens:', err);
+                    resultsDiv.innerHTML = '<div style="padding: 12px; color: var(--red);">Error buscando</div>';
+                }
+            }, 300);
+        }
+
+        // Select a citizen for consumption
+        function selectCitizen(citizen) {
+            selectedCitizen = citizen;
+
+            // Hide search, show selected card
+            document.querySelector('.dracma-search-panel').style.display = 'none';
+            document.getElementById('selectedCitizenCard').style.display = 'block';
+            document.getElementById('consumptionForm').style.display = 'block';
+
+            // Populate selected citizen info
+            document.getElementById('staffCitizenAvatar').src = citizen.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(citizen.name || citizen.email);
+            document.getElementById('staffCitizenName').textContent = citizen.name || citizen.email.split('@')[0];
+            document.getElementById('staffCitizenLevel').textContent = citizen.membership_type === 'premium' ? 'Ciudadano Premium' : 'Ciudadano Standard';
+            document.getElementById('staffCitizenBalance').textContent = parseFloat(citizen.dracma_balance || 0).toFixed(2) + ' Ɖ';
+        }
+
+        // Clear selected citizen
+        function clearSelectedCitizen() {
+            selectedCitizen = null;
+            document.querySelector('.dracma-search-panel').style.display = 'block';
+            document.getElementById('selectedCitizenCard').style.display = 'none';
+            document.getElementById('consumptionForm').style.display = 'none';
+            document.getElementById('citizenSearch').value = '';
+            document.getElementById('citizenResults').innerHTML = '';
+            document.getElementById('consumptionItem').value = '';
+            document.getElementById('consumptionPrice').value = '';
+        }
+
+        // Calculate DRACMAS from price (1 DRACMA = $1000)
+        function calculateDracmas() {
+            const price = parseFloat(document.getElementById('consumptionPrice').value) || 0;
+            const dracmaDeduction = price / 1000; // $1000 = 1 DRACMA
+            const cashback = dracmaDeduction * 0.10; // 10% cashback
+            const currentBalance = parseFloat(selectedCitizen?.dracma_balance || 0);
+            const balanceAfter = currentBalance - dracmaDeduction + cashback;
+
+            document.getElementById('dracmaDeduction').textContent = '-' + dracmaDeduction.toFixed(2) + ' Ɖ';
+            document.getElementById('dracmaCashback').textContent = '+' + cashback.toFixed(2) + ' Ɖ';
+            document.getElementById('balanceAfter').textContent = balanceAfter.toFixed(2) + ' Ɖ';
+
+            // Enable/disable confirm button
+            const confirmBtn = document.getElementById('confirmBtn');
+            const itemName = document.getElementById('consumptionItem').value.trim();
+
+            if (price > 0 && itemName && dracmaDeduction <= currentBalance) {
+                confirmBtn.disabled = false;
+            } else {
+                confirmBtn.disabled = true;
+            }
+        }
+
+        // Confirm consumption
+        async function confirmConsumption() {
+            if (!selectedCitizen) return;
+
+            const price = parseFloat(document.getElementById('consumptionPrice').value);
+            const itemName = document.getElementById('consumptionItem').value.trim();
+            const dracmaDeduction = price / 1000;
+            const cashback = dracmaDeduction * 0.10;
+
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'PROCESANDO...';
+
+            try {
+                if (!supabaseClient) await initDracmaSupabase();
+
+                // Record consumption transaction
+                const { data: consumeResult, error: consumeError } = await supabaseClient.rpc('record_dracma_transaction', {
+                    p_citizen_id: selectedCitizen.id,
+                    p_type: 'consumo',
+                    p_amount: -dracmaDeduction,
+                    p_description: itemName + ' ($' + price.toLocaleString('es-AR') + ')'
+                });
+
+                if (consumeError) throw consumeError;
+
+                // Record cashback transaction
+                const { data: cashbackResult, error: cashbackError } = await supabaseClient.rpc('record_dracma_transaction', {
+                    p_citizen_id: selectedCitizen.id,
+                    p_type: 'cashback',
+                    p_amount: cashback,
+                    p_description: 'Cashback 10% - ' + itemName
+                });
+
+                if (cashbackError) console.error('Cashback error:', cashbackError);
+
+                // Sync to Google Sheets
+                const SHEETS_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxy47y2PEKxSLCM-D0EhOH7FREeMcxCwnePsaOO83Mv81k9SlbN73nITJdjASn49OiP/exec';
+
+                try {
+                    // Log consumption (RPC returns TABLE as array)
+                    const consumeBalance = (consumeResult && consumeResult[0]) ? consumeResult[0].new_balance : 0;
+                    fetch(SHEETS_SYNC_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fecha: new Date().toLocaleString('es-AR'),
+                            email: selectedCitizen.email,
+                            nombre: selectedCitizen.name || 'N/A',
+                            tipo: '🍽️ Consumo',
+                            monto: -dracmaDeduction,
+                            descripcion: itemName + ' ($' + price.toLocaleString('es-AR') + ')',
+                            saldo: consumeBalance,
+                            ciudadania: selectedCitizen.membership_type
+                        })
+                    });
+
+                    // Log cashback (RPC returns TABLE as array)
+                    const cashbackBalance = (cashbackResult && cashbackResult[0]) ? cashbackResult[0].new_balance : 0;
+                    fetch(SHEETS_SYNC_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fecha: new Date().toLocaleString('es-AR'),
+                            email: selectedCitizen.email,
+                            nombre: selectedCitizen.name || 'N/A',
+                            tipo: '↩️ Cashback',
+                            monto: cashback,
+                            descripcion: 'Cashback 10% - ' + itemName,
+                            saldo: cashbackBalance,
+                            ciudadania: selectedCitizen.membership_type
+                        })
+                    });
+
+                    // Sync citizen data (use final balance after cashback)
+                    // Note: RPC returns TABLE which Supabase returns as array
+                    const finalBalance = (cashbackResult && cashbackResult[0]) ? cashbackResult[0].new_balance : 0;
+                    fetch(SHEETS_SYNC_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'sync_citizen',
+                            email: selectedCitizen.email,
+                            nombre: selectedCitizen.name || 'N/A',
+                            ciudadania: selectedCitizen.membership_type,
+                            saldo: finalBalance,
+                            ultimo_pago: selectedCitizen.last_payment_date || ''
+                        })
+                    });
+
+                    console.log('Synced to Google Sheets');
+                } catch (sheetErr) {
+                    console.log('Sheet sync failed (non-blocking):', sheetErr);
+                }
+
+                // Show success
+                document.getElementById('consumptionForm').style.display = 'none';
+                document.getElementById('selectedCitizenCard').style.display = 'none';
+                document.getElementById('consumptionSuccess').style.display = 'block';
+
+            } catch (err) {
+                console.error('Error recording consumption:', err);
+                alert('Error: ' + (err.message || 'No se pudo registrar el consumo'));
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'CONFIRMAR CONSUMO';
+            }
+        }
+
+        // Reset DRACMA screen for new consumption
+        function resetDracmaScreen() {
+            clearSelectedCitizen();
+            document.getElementById('consumptionSuccess').style.display = 'none';
+            document.getElementById('confirmBtn').textContent = 'CONFIRMAR CONSUMO';
+            document.getElementById('confirmBtn').disabled = true;
+        }
+
+        // ==================== MEMBERSHIP APPROVAL ====================
+        let selectedMembershipCitizen = null;
+        let selectedPlan = null;
+        let membershipSearchTimeout = null;
+
+        async function searchCitizensForMembership(query) {
+            clearTimeout(membershipSearchTimeout);
+            const resultsDiv = document.getElementById('membershipResults');
+
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            membershipSearchTimeout = setTimeout(async () => {
+                if (!supabaseClient) await initDracmaSupabase();
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('citizens')
+                        .select('*')
+                        .or(`email.ilike.%${query}%,name.ilike.%${query}%`)
+                        .limit(5);
+
+                    if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        resultsDiv.innerHTML = '<div style="padding: 12px; color: #888;">No se encontraron ciudadanos</div>';
+                        return;
+                    }
+
+                    resultsDiv.innerHTML = data.map(citizen => `
+                        <div class="citizen-result-item" onclick='selectCitizenForMembership(${JSON.stringify(citizen).replace(/'/g, "\\'")})'>
+                            <img src="${citizen.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(citizen.name || citizen.email)}" alt="">
+                            <div>
+                                <div class="name">${citizen.name || citizen.email.split('@')[0]}</div>
+                                <div class="email">${citizen.email}</div>
+                            </div>
+                            <div class="balance-badge">${citizen.membership_type || 'visitor'}</div>
+                        </div>
+                    `).join('');
+                } catch (err) {
+                    console.error('Search error:', err);
+                    resultsDiv.innerHTML = '<div style="padding: 12px; color: #ff4444;">Error buscando</div>';
+                }
+            }, 300);
+        }
+
+        function selectCitizenForMembership(citizen) {
+            selectedMembershipCitizen = citizen;
+            selectedPlan = null;
+
+            document.getElementById('membershipResults').innerHTML = '';
+            document.getElementById('membershipSearch').value = '';
+            document.getElementById('membershipCitizenCard').style.display = 'block';
+
+            document.getElementById('membershipAvatar').src = citizen.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(citizen.name || citizen.email);
+            document.getElementById('membershipName').textContent = citizen.name || citizen.email.split('@')[0];
+            document.getElementById('membershipEmail').textContent = citizen.email;
+            document.getElementById('membershipCurrentType').textContent = (citizen.membership_type || 'visitor').toUpperCase();
+            document.getElementById('membershipBalance').textContent = (citizen.dracma_balance || 0).toFixed(1) + ' ₯';
+
+            // Reset plan selection
+            document.getElementById('btnStandard').classList.remove('selected');
+            document.getElementById('btnPremium').classList.remove('selected');
+            document.getElementById('approveMembershipBtn').disabled = true;
+        }
+
+        function selectMembershipPlan(plan) {
+            selectedPlan = plan;
+
+            document.getElementById('btnStandard').classList.toggle('selected', plan === 'standard');
+            document.getElementById('btnPremium').classList.toggle('selected', plan === 'premium');
+            document.getElementById('approveMembershipBtn').disabled = false;
+        }
+
+        async function approveMembership() {
+            if (!selectedMembershipCitizen || !selectedPlan) return;
+
+            const btn = document.getElementById('approveMembershipBtn');
+            btn.disabled = true;
+            btn.textContent = 'PROCESANDO...';
+
+            const dracmasToAdd = selectedPlan === 'premium' ? 50 : 25;
+
+            try {
+                if (!supabaseClient) await initDracmaSupabase();
+
+                // Update citizen membership and add DRACMAS
+                const { error: updateError } = await supabaseClient
+                    .from('citizens')
+                    .update({
+                        membership_type: selectedPlan,
+                        last_payment_date: new Date().toISOString()
+                    })
+                    .eq('id', selectedMembershipCitizen.id);
+
+                if (updateError) throw updateError;
+
+                // Record DRACMAS accreditation
+                const { data: accreditResult, error: accreditError } = await supabaseClient.rpc('record_dracma_transaction', {
+                    p_citizen_id: selectedMembershipCitizen.id,
+                    p_type: 'acreditacion',
+                    p_amount: dracmasToAdd,
+                    p_description: 'Membresía ' + selectedPlan.toUpperCase() + ' - ' + new Date().toLocaleDateString('es-AR')
+                });
+
+                if (accreditError) console.error('Accreditation error:', accreditError);
+
+                // Sync to Google Sheets
+                const SHEETS_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxy47y2PEKxSLCM-D0EhOH7FREeMcxCwnePsaOO83Mv81k9SlbN73nITJdjASn49OiP/exec';
+                const finalBalance = (accreditResult && accreditResult[0]) ? accreditResult[0].new_balance : 0;
+
+                try {
+                    // Log accreditation
+                    fetch(SHEETS_SYNC_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fecha: new Date().toLocaleString('es-AR'),
+                            email: selectedMembershipCitizen.email,
+                            nombre: selectedMembershipCitizen.name || 'N/A',
+                            tipo: '💰 Acreditación',
+                            monto: dracmasToAdd,
+                            descripcion: 'Membresía ' + selectedPlan.toUpperCase(),
+                            saldo: finalBalance,
+                            ciudadania: selectedPlan
+                        })
+                    });
+
+                    // Sync citizen
+                    fetch(SHEETS_SYNC_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'sync_citizen',
+                            email: selectedMembershipCitizen.email,
+                            nombre: selectedMembershipCitizen.name || 'N/A',
+                            ciudadania: selectedPlan,
+                            saldo: finalBalance,
+                            ultimo_pago: new Date().toLocaleDateString('es-AR')
+                        })
+                    });
+                } catch (sheetErr) {
+                    console.log('Sheet sync failed:', sheetErr);
+                }
+
+                // Show success
+                document.getElementById('membershipCitizenCard').style.display = 'none';
+                document.getElementById('membershipSuccess').style.display = 'block';
+                document.getElementById('membershipSuccessDetails').innerHTML =
+                    `<strong>${selectedMembershipCitizen.name || selectedMembershipCitizen.email}</strong><br>` +
+                    `Plan: ${selectedPlan.toUpperCase()}<br>` +
+                    `DRACMAS acreditados: +${dracmasToAdd} ₯`;
+
+            } catch (err) {
+                console.error('Error approving membership:', err);
+                alert('Error: ' + (err.message || 'No se pudo aprobar la membresía'));
+                btn.disabled = false;
+                btn.textContent = 'CONFIRMAR APROBACIÓN';
+            }
+        }
+
+        function resetMembershipScreen() {
+            selectedMembershipCitizen = null;
+            selectedPlan = null;
+            document.getElementById('membershipCitizenCard').style.display = 'none';
+            document.getElementById('membershipSuccess').style.display = 'none';
+            document.getElementById('approveMembershipBtn').textContent = 'CONFIRMAR APROBACIÓN';
+            document.getElementById('approveMembershipBtn').disabled = true;
+        }
+
+        // Initialize Supabase on load
+        initDracmaSupabase();
 
         init();
     </script>
